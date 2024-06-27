@@ -1,6 +1,8 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using Il2Cpp;
+using Il2CppInterop.Runtime.Injection;
 using Il2CppTLD.Gear;
+using Il2CppTLD.IntBackedUnit;
 using MelonLoader;
 
 namespace WeightTweaks
@@ -8,18 +10,22 @@ namespace WeightTweaks
     [HarmonyPatch(typeof(GearItem), nameof(GearItem.GetItemWeightKG), new Type[] { typeof(bool) })]
     internal class GearItem_GetItemWeightKG
     {
-        private static void Postfix(GearItem __instance, ref float __result)
+        private static void Postfix(GearItem __instance, ref ItemWeight __result)
         {
-            __result = WeightTweaks.ModifyWeight(__instance, __result);
+            float retour = WeightTweaks.ModifyWeight(__instance, __result.ToQuantity(1));
+
+            __result = ItemWeight.FromKilograms(retour);
         }
     }
 
     [HarmonyPatch(typeof(GearItem), nameof(GearItem.GetItemWeightKG), new Type[] { typeof(float), typeof(bool) })]
     internal class GearItem_GetItemWeightKG_Stack
     {
-        private static void Postfix(GearItem __instance, ref float __result)
+        private static void Postfix(GearItem __instance, ref ItemWeight __result)
         {
-            __result = WeightTweaks.ModifyWeight(__instance, __result);
+            float retour = WeightTweaks.ModifyWeight(__instance, __result.ToQuantity(1));
+
+            __result = ItemWeight.FromKilograms(retour);
         }
     }
 
